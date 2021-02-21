@@ -1,0 +1,133 @@
+CreateRoomReq:
+    msg_name (str)
+    user_name (str)
+
+CreateRoomResp:
+    msg_name (str)
+    status (str)
+    room_code (str)
+
+JoinRoomReq:
+    msg_name (str)
+    user_name (str)
+    room_code (str)
+
+JoinRoomResp:
+    msg_name (str)
+    status (str)
+    info (str)[exists if status == NOT_OK]
+    owner (str)
+    users_in_room ({score_awarded}) 
+
+ChatMessageReq:
+    msg_name (str)
+    user_name (str)
+    room_code (str)
+    message (str)
+
+ChatMessageBc:
+    msg_name (str)
+    author (str)
+    message (str)
+
+ExitClientReq:
+    msg_name (str)
+    user_name (str)
+    room_code (str)
+
+StartGameReq:
+    msg_name (str)
+    user_name (str)
+    room_code (str)
+
+StartGameResp:
+    msg_name (str)
+    info (str)[optional]
+    status (NOK/OK)
+
+StartGameBc:
+    msg_name (str)
+    artist (str)
+
+ArtistPickBc:
+    msg_name (str)
+    artist (str)
+
+{% comment %} Server -> Client {% endcomment %}
+WordSelectionReq:
+    msg_name (str)
+    user_name (str)
+    room_code (str)
+    word_list ([str])
+
+{% comment %} Client -> Server {% endcomment %}
+WordSelectionResp:
+    msg_name (str)
+    user_name (str)
+    room_code (str)
+    selected_word (str)
+
+DisconnectSocketReq():
+    msg_name (str)
+
+DrawStrokeReq():
+    msg_name (str)
+    user_name (str)
+    room_code (str)
+    stroke_coordinates ([(x,y),(x,y),...]) ????????
+
+DrawStrokeBc():
+    msg_name (str)
+    stroke_coordinates ([(x,y),(x,y),...]) ????????
+
+UndoLastStrokeReq():
+    msg_name (str)
+    user_name (str)
+    room_code (str)
+
+UndoLastStrokeBc():
+    msg_name (str)
+
+ClearCanvasReq():
+    msg_name (str)
+    user_name (str)
+    room_code (str)
+
+ClearCanvasBc():
+    msg_name (str)
+
+WordGuessedBc():
+    msg_name (str)
+    word (str)
+    user_name (str) (person who's guessed the word)
+    score_awarded ({"user_name": score, ...})
+
+{% comment %} Server -> Client {% endcomment %}
+GameFinishedBc():
+    msg_name (str)
+    info (str) (eg: game started after 3 rounds) [optional - present when the game is interrupted]
+
+GameRoomListReq():
+    msg_name (str)
+
+GameRoomListResp():
+    msg_name (str)
+    room_list ([dict, dict,...])
+        'owner_name'
+        'num_of_players'
+        'room_code'
+        
+{% comment %} Server -> Client {% endcomment %}
+WordHintBc():
+    msg_name (str)
+    word_hint (str) (encoded word with "_") eg. cat -> ___
+    "hot air balloon"
+     ___ ___ _______
+
+UpdateScoreboardBc():
+    msg_name (str)
+    users_in_room ({"user_name": score, ...})
+
+OwnerChangedBc:
+    msg_name (str)
+    owner (str)

@@ -1,0 +1,52 @@
+Po stworzeniu pokoju, poza dołączaniem, bo to już jest:
+
+server = Serwer, przechowuje "źródło prawdy" o stanie gry
+player = Gracz, każdy przechowuje własną kopię stanu gry
+owner = Założyciel pokoju
+artist = Obecnie malujący gracz
+
+Stany gry:
+PREGAME
+WORD_SELECTION
+DRAWING
+POSTGAME
+
+REMARK (mloska):
+Co kiedy host wyjdzie? wyjscie z gry/pokoju -> POSTGAME czy od razu wychodzimy z maszyny stanow?
+
+
+Na początku gra w stanie PREGAME, można pisać na czacie, owner rozpoczyna komendą/przyciskiem/czymśtam
+
+Start gry:
+owner: start_message: {} -> server
+server: start_message: {"artist": ...} -> broadcast
+Przejście gry ze stanu PREGAME lub POSTGAME do WORD_SELECTION
+
+Wybór słowa:
+server: select_prompt_message: {"prompts": [...]} -> artist
+artist: selected_prompt_message: {"prompt": ...} -> server -> broadcast
+Przejście gry ze stanu WORD_SELECTION do stanu DRAWING
+
+Rysowanie:
+artist: stroke_message: {"stroke": [...]} -> server -> broadcast
+artist: undo_message: {} -> server -> broadcast
+artist: clear_message: {} -> server -> broadcast
+
+Zgadywanie i czat:
+player: chat_message: {...} -> server -> sprawdź czy to wybrane słowo
+ - Jeśli tak to guess_correct_message: {"player": ..., "score_awarded": ..., "artist_score_awarded": ...} -> broadcast
+ - Jesli nie to chat_message: {...} -> broadcast
+
+Jeśli wszyscy już zgadli to zmiana artysty:
+server: artist_change_message: {"artist": ...} -> broadcast
+Przejście z DRAWING do WORD_SELECTION
+Wybór słowa
+
+Jedna "runda" to gdy wszyscy rysowali po raz, powiedzmy ze rund jest 3, playerzy nie muszą wiedzieć chyba że runda się skończyła i rozpoczęła się kolejna
+
+Gdy przeszły już wszystkie rundy:
+server: game_over_message: {"final_scores": [...]} -> broadcast
+Przejście gry ze stanu DRAWING do POSTGAME (Wyświetlenie ostatecznej tabeli wyników i zwycięzcy, okna z historią rysunków, poza tym tak samo jak PREGAME)
+
+Przyda się jakiś handling sytuacji gdy artist lub owner wyjdą z gry, ew. zostanie tylko jedna osoba.
+Dołączanie w trakcie oraz odejście innych playerów bez jakiegoś szczególnego handlingu chyba

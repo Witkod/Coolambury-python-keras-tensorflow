@@ -1,0 +1,7 @@
+{
+    "PORT": 5050,
+    "HEADER_LEN": 256,
+    "SERVER": "172.105.74.176",
+    "model_path": "./Server/resources/model.h5",
+    "labels_path": "./Server/resources/labels.csv"
+}
